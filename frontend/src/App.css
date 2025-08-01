@@ -1,0 +1,12 @@
+.rootComponent {
+    display: flex;
+    height: 100vh;
+    font-family: Roboto, 'Open Sans', 'Helvatica Neve', sans-serif;
+}
+.rootComponent > :nth-child(1) {
+    width: fit-content;
+}
+
+.rootComponent > :nth-child(2) {
+  width: auto;
+}
