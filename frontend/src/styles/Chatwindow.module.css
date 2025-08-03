@@ -1,0 +1,9 @@
+.ChatWindowContainer{ 
+    flex-grow: 1;
+}
+.ChatWindowContainer > :nth-child(2) {
+    height: 72.5%;
+}
+.ChatWindowContainer > :nth-child(3) {
+    height: 18%;
+}

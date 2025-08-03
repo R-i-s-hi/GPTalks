@@ -12,9 +12,16 @@ const getOpenAiResponse = async (message) => {
     try {
         const response = await fetch(url, options);
         const data = await response.json();
+
+        if (!data || !data.choices || !Array.isArray(data.choices) || !data.choices[0]?.text) {
+            console.error("Malformed OpenRouter response:", data);
+            throw new Error("Failed to retrieve assistant reply.");
+        }
+
         return data.choices[0].text;
     } catch (error) {
-        console.error(error);
+        console.error("getOpenAiResponse error:", error);
+        return null;
     }
 }
 

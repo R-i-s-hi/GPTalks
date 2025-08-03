@@ -1,11 +1,19 @@
 :root {
   --bg-color: #ffffff;
-  --text-color: #000000;
+  --text-color: #060606a8;
+  --border-color: #0d0d0d0d;
+  --sidebar-color: #f9f9f9;
+  --btn-text-color: #36454F;
+  --input-box-shadow: 2px 2px 2px rgba(249, 249, 249, 0.45);
 }
 
 [data-theme="dark"] {
   --bg-color: #212121;
   --text-color: #ececec;
+  --border-color: #ffffff0d;
+  --sidebar-color: #303030;
+  --btn-text-color: #ececec;
+  --input-box-shadow: none;
 }
 
 * {

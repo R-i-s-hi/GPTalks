@@ -1,0 +1,22 @@
+nav {
+    border-bottom: 1px solid var(--border-color);
+    width: 100%;
+}
+
+.theme_toggle_btn {
+    background-color:  var(--bg-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 10px;
+    padding: 0.5rem 0.6rem;
+    display: flex;
+    align-items: center;
+}
+
+.theme_toggle_btn i {
+    font-size: large;
+}
+
+.theme_toggle_btn:hover {
+    background-color: #d3cfcf3e;
+}
