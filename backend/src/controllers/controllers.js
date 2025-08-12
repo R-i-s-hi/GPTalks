@@ -68,38 +68,48 @@ const deleteFavChat = async (req, res) => {
     }
 }
 
-const saveChat = async(req, res) => {
-    const {id, message} = req.body;
+const saveChat = async (req, res) => {
+    const { id, message } = req.body;
 
-    if(!id || !message) res.status(400).json({message: "missing required fields!"})
+    if (!id || !message) {
+        return res.status(400).json({ message: "Missing required fields!" });
+    }
 
     try {
-        const thread = await Thread.findOne({threadId: id});
+        let thread = await Thread.findOne({ threadId: id });
 
-        if(!thread) {
+        if (!thread) {
             thread = new Thread({
                 threadId: id,
                 title: message,
-                messages: [{role: "user", content: message}]
+                messages: [{ role: "user", content: message }]
             });
-
             await thread.save();
-        
+
         } else {
-            thread.messages.push({role: "user", content: message});
+            thread.messages.push({ role: "user", content: message });
         }
 
         const assistantReply = await getOpenAiResponse(message);
-        thread.messages.push({role: "assistant", content: assistantReply});
+
+        if(assistantReply) {
+            console.log("AI response given.")
+        }
+        if (!assistantReply) {
+            console.warn("Assistant reply was null. Skipping save.");
+            return res.status(502).json({ message: "AI failed to respond." });
+        } 
+
+        thread.messages.push({ role: "assistant", content: assistantReply });
         thread.updatedAt = new Date();
 
         await thread.save();
-        res.json({reply: assistantReply});
+        res.json({ reply: assistantReply });
     } catch (err) {
-        res.status(500).json({message: `Something went wrong`});
-        console.error(err);
+        console.error("saveChat error:", err);
+        res.status(500).json({ message: "Something went wrong." });
     }
-}
+};
 
 const saveFavChat = async(req, res) => {
     const {id, message} = req.body;

@@ -4,11 +4,12 @@ import Chat from "./Chat.jsx";
 import ChatInput from "./ChatInput.jsx"
 
 function ChatWindow() {
+
     return ( 
         <div className={styles.ChatWindowContainer}>
             <Navbar />
             <Chat />
-            <ChatInput />
+            <ChatInput/>
         </div>
      );
 }

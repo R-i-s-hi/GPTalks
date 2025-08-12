@@ -1,28 +1,38 @@
 import "dotenv/config"
 
 const getOpenAiResponse = async (message) => {
-
-    const url = 'https://openrouter.ai/api/v1/completions';
+    const url = 'https://openrouter.ai/api/v1/chat/completions';
     const options = {
         method: 'POST',
-        headers: {Authorization: `Bearer ${process.env.API_KEY}`, 'Content-Type': 'application/json'},
-        body: JSON.stringify({model: process.env.MODEL, prompt: message})
+        headers: {
+            Authorization: `Bearer ${process.env.API_KEY}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            model: process.env.MODEL,
+            messages: [
+              {
+                role: "user",
+                content: message
+              }  
+            ] 
+        })
     };
 
     try {
         const response = await fetch(url, options);
         const data = await response.json();
 
-        if (!data || !data.choices || !Array.isArray(data.choices) || !data.choices[0]?.text) {
+        const reply = data?.choices?.[0]?.message?.content;
+        if (!reply) {
             console.error("Malformed OpenRouter response:", data);
-            throw new Error("Failed to retrieve assistant reply.");
+            return null;
         }
-
-        return data.choices[0].text;
+        return reply;
     } catch (error) {
         console.error("getOpenAiResponse error:", error);
         return null;
     }
-}
+};
 
 export default getOpenAiResponse;

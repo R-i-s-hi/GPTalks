@@ -1,0 +1,81 @@
+.chatsDisplay {
+    flex-grow: 1;
+    padding-top: 20px;
+    padding-inline: 25%;
+    overflow-y: auto;
+    margin-bottom: 0.3rem;
+}
+
+.chatsDisplay::-webkit-scrollbar {
+    background-color: var(--bg-color);
+    width: 8px;
+}
+.chatsDisplay::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.chatsDisplay::-webkit-scrollbar-thumb {
+    background-color: var(--btn-text-color);
+    border-radius: 4px;
+}
+
+.newChatLine {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 95%;
+    margin-bottom: 0;
+}
+
+.userChat {
+    display: flex;
+    justify-content:end;
+}
+
+.userChat p {
+    background-color: #d3cfcf3e;
+    max-width: 530px;
+    color: var(--text-color);
+    width: fit-content;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+}
+
+.chats {
+    display: inline-block;
+    justify-content: center;
+    width: 100%;
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
+    color: var(--text-color);
+}
+
+pre {
+  background-color: var(--code-bg);
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.hljs {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+  color: var(--code-color);
+  background-color: var(--code-bg) !important;
+  border-radius: 12px;
+}
+
+@media(max-width: 880px) {
+    .chatsDisplay { 
+        padding-inline: 15%;
+    }
+}
+
+@media(max-width: 630px) {
+    .chatsDisplay { 
+        padding-inline: 5%;
+    }
+}

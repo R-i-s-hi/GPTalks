@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
-// import getOpenAiResponse from "../utils/openai";
 import chatRoutes from "./routes/chat.js"
 
 const app = express();

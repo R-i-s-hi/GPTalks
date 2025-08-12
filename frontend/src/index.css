@@ -4,7 +4,11 @@
   --border-color: #0d0d0d0d;
   --sidebar-color: #f9f9f9;
   --btn-text-color: #36454F;
-  --input-box-shadow: 2px 2px 2px rgba(249, 249, 249, 0.45);
+  --input-border: #edf2f2;
+  --input-box-shadow: 3px 3px 5px rgb(220, 220, 220);
+  --input-bg-color: #ffffff;
+  --code-bg: #f0efef;
+  --code-color: #060606a8;
 }
 
 [data-theme="dark"] {
@@ -13,7 +17,11 @@
   --border-color: #ffffff0d;
   --sidebar-color: #303030;
   --btn-text-color: #ececec;
+  --input-border: #ffffff0d;
   --input-box-shadow: none;
+  --input-bg-color: #d3cfcf3e;
+  --code-bg: #0d1117;
+  --code-color: #ececec;
 }
 
 * {

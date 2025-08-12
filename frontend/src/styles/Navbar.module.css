@@ -20,3 +20,11 @@ nav {
 .theme_toggle_btn:hover {
     background-color: #d3cfcf3e;
 }
+
+.profile {
+    font-size: 13px;
+    border: none;
+    border-radius: 40px;
+    padding: 0.4rem 0.5rem;
+    background-color: #6c63ff;
+}
