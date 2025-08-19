@@ -1,6 +1,8 @@
 .rootComponent {
     display: flex;
     height: 100vh;
+    width: 100vw;
+    overflow: hidden;
     font-family: Roboto, 'Open Sans', 'Helvatica Neve', sans-serif;
 }
 .rootComponent > :nth-child(1) {

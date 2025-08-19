@@ -10,8 +10,7 @@ import "highlight.js/styles/github-dark.css"
 
 function Chat() {
 
-    const {isLoader, prevChats, newChat, reply} = useContext(AllContext);
-    const [latestReply, setLatestReply] = useState(null);
+    const {isLoader, prevChats, newChat, reply, latestReply, setLatestReply} = useContext(AllContext);
     const lastMsgRef = useRef(null);
     const isTyping = latestReply !== null && latestReply !== reply;
 
@@ -26,7 +25,10 @@ function Chat() {
     }, [latestReply, isLoader]);
 
     useEffect(() => {
-        if(!prevChats?.length) return;
+        if(reply === null){
+            setLatestReply(null);
+            return;   
+        }
 
         const content = reply.split(" ");
 
@@ -41,7 +43,7 @@ function Chat() {
 
         return () => clearInterval(interval);
 
-    }, [prevChats, reply])
+    }, [reply])
 
     return ( 
         <div className={styles.chatsDisplay}>
@@ -51,22 +53,26 @@ function Chat() {
             
             <div className={styles.chats}>
                 {
-                    prevChats?.map((chat, idx) => (
-                        <div className={chat.role === "user" ? styles.userChat : styles.gptChat} key={idx}>
-                            {chat.role === "user" ? (
-                                <p className={styles.userMsg}>{chat.content}</p>
-                            ) : (
-                               
-                                <div className={styles.gptMsg}>
-                                <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
-                                    {chat.content}
-                                </ReactMarkdown>
-                                </div>
-                            
-                            )
-                            }
-                        </div>
-                    ))
+                    prevChats?.map((chat, idx) => {
+                        const isLast = idx === prevChats.length - 1;
+                        return (
+                            <div
+      className={chat.role === "user" ? styles.userChat : styles.gptChat}
+      key={idx}
+      ref={isLast ? lastMsgRef : null}
+    >
+      {chat.role === "user" ? (
+        <p className={styles.userMsg}>{chat.content}</p>
+      ) : (
+        <div className={styles.gptMsg}>
+          <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
+            {chat.content}
+          </ReactMarkdown>
+        </div>
+      )}
+    </div>
+                        )
+                    })
                 }
                 {
                     isTyping && (

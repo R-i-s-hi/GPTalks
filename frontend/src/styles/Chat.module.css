@@ -1,9 +1,9 @@
 .chatsDisplay {
-    flex-grow: 1;
+    flex: 1;
+    padding-inline: clamp(5%, 20%, 20%);
     padding-top: 20px;
-    padding-inline: 25%;
     overflow-y: auto;
-    margin-bottom: 0.3rem;
+    margin-bottom: 1rem;
 }
 
 .chatsDisplay::-webkit-scrollbar {
@@ -34,7 +34,8 @@
 
 .userChat p {
     background-color: #d3cfcf3e;
-    max-width: 530px;
+    max-width: 90%;
+    word-wrap: break-word;
     color: var(--text-color);
     width: fit-content;
     padding: 0.4rem 0.8rem;
@@ -55,12 +56,12 @@
 
 pre {
   background-color: var(--code-bg);
-  overflow-x: auto;
+  flex-grow: 1;
   padding: 1rem;
   border-radius: 12px;
 }
 
-.hljs {
+pre code {
   font-family: 'Fira Code', monospace;
   font-size: 0.9rem;
   color: var(--code-color);
@@ -69,13 +70,15 @@ pre {
 }
 
 @media(max-width: 880px) {
-    .chatsDisplay { 
-        padding-inline: 15%;
+    .chatsDisplay {
+        padding-inline: clamp(5%, 10%, 20%);
     }
 }
 
 @media(max-width: 630px) {
-    .chatsDisplay { 
-        padding-inline: 5%;
+
+    pre {
+        white-space: pre-wrap;
+        word-break: break-word;
     }
 }

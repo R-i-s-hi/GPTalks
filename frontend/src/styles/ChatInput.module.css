@@ -1,26 +1,28 @@
 .chatInputContainer {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
+    gap: 0.25rem;
     width: 100%;
 }
 
 .chatInputContainer > :nth-child(1) {
     height: 105px;
-    flex-grow: 1;
-    min-width: fit-content;
+    flex: 0 0 auto;
+    max-width: 900px;
     background-color: var(--bg-color);
-    margin-inline: 25%;
+    margin-inline: clamp(5%, 20%, 20%);
     border-radius: 25px;
     border: 2px solid var(--input-border);
     box-shadow: var(--input-box-shadow);
 }
 
 .chatInputContainer > :nth-child(2) {
-    margin-top: 5px;
-    font-size: small;
+    font-size: 10px;
     font-weight: 300 !important;
     text-align: center;
     opacity: 0.6;
+    flex-shrink: 0;
 }
 
 .chatInputContainer input {
@@ -71,9 +73,11 @@
 }
 
 @media(max-width: 880px) {
-    .chatInputContainer :nth-child(1) { 
-        margin-inline: 15%;
+
+    .chatInputContainer > :nth-child(1) {
+        margin-inline: clamp(5%, 10%, 20%);
     }
+
     .chatInputContainer input {
         padding-inline: 1rem;
         margin-inline: 1rem !important;
@@ -91,9 +95,6 @@
 }
 
 @media(max-width: 630px) {
-    .chatInputContainer :nth-child(1) { 
-        margin-inline: 5%;
-    }
     .bottom_line {
         display: none;
     }

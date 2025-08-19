@@ -1,11 +1,13 @@
 import styles from "../styles/Sidebar.module.css";
 import { useContext, useEffect, useState } from "react";
 import { AllContext } from "../contexts/context";
+import {v1 as uuidv1} from "uuid";
 
 function Sidebar() {
 
-    const {allThreads, setAllThreads, allFavThreads, setAllFavThraeds, currThreadId} = useContext(AllContext);
-
+    const {allThreads, setAllThreads, allFavThreads, setAllFavThraeds, currThreadId, setCurrThreadId, newChat, setNewChat, prompt, setPrompt, reply, setReply, prevChats, setPrevChats, setLatestReply} = useContext(AllContext);
+    let [isOpen, setIsOpen] = useState(false);
+    let [showFavChats, setShowFavChats] = useState(false);
 
     const getAllThreads = async () => {
 
@@ -30,20 +32,42 @@ function Sidebar() {
         }
     }
 
-    useEffect(() => {
-        getAllThreads();
-        getAllFavThreads();
-    }, [currThreadId]);
-
-    let [isOpen, setIsOpen] = useState(true);
-    let [showFavChats, setShowFavChats] = useState(false);
-
     const sidebarHandler = () => {
         setIsOpen((prev) => !prev);
     }
     const FavChatHandler = () => {
         setShowFavChats((prev) => !prev);
     }
+
+    const createNewChat = () => {
+        setNewChat(true);
+        setPrompt("");
+        setReply(null);
+        setLatestReply(null);
+        setCurrThreadId(uuidv1());
+        setPrevChats([]);
+    }
+
+    const changeThread = async(threadId) => {
+        setCurrThreadId(threadId); // the threadId of the new chat window set to the current thread
+        setPrompt("");
+        setReply(null);
+
+        try {
+            const response = await fetch(`http://localhost:5000/api/thread/${threadId}`);
+            const data = await response.json();
+            console.log(data);
+            setPrevChats(data);
+            setNewChat(false);
+        } catch (e) {
+            console.log(`changeThread error: ${e}`);
+        }
+    }
+
+    useEffect(() => {
+        getAllThreads();
+        getAllFavThreads();
+    }, [currThreadId]);
 
     return (
         <div>
@@ -55,13 +79,16 @@ function Sidebar() {
                             <i className="fa-solid fa-xmark"></i>
                         </button>
                     </div>
+
                     <div>
-                        <button style={{display: "flex", alignItems: "center", width: "100%", height: "2.5rem", marginTop: "1.3rem", paddingInlineStart: "1rem"}} type="button">
+                        <button onClick={createNewChat} style={{display: "flex", alignItems: "center", width: "100%", height: "2.5rem", marginTop: "1.3rem", paddingInlineStart: "1rem"}} type="button">
                             <i class="fa-solid fa-pen-to-square fw-normal"></i>
                             <p className="mb-0 ms-2">New chat</p>
                         </button>
                     </div>
+
                     {showFavChats ? (<div className={styles.tagLine}>Archieved chats</div>) : (<div className={styles.tagLine}>all chats</div>)}
+                    
                     <div className={styles.main}>
                         {showFavChats ? (
                             <>       
@@ -81,7 +108,7 @@ function Sidebar() {
                                 <ul>
                                     {
                                         allThreads?.map((thread, idx) => (
-                                            <li key={idx}>{thread.title}</li>
+                                            <li key={idx} onClick={() => {changeThread(thread.threadId);}}>{thread.title}</li>
                                         )) 
                                         
                                     } 
@@ -100,7 +127,7 @@ function Sidebar() {
                         ) : (
                             <button className={styles.bottomBtn2} onClick={FavChatHandler}> 
                                 <i class="fa-regular fa-star ps-2"></i>
-                                <p className="mb-0 ms-3">Favourates</p>
+                                <p className="mb-0 ms-3">Archieves</p>
                             </button> 
                         )} 
                     </div>
@@ -112,7 +139,7 @@ function Sidebar() {
                         </button>
 
                         
-                        <button style={{display: "flex", alignItems: "center", width: "100%", padding: "0.5rem", marginTop: "1.3rem"}} type="button">
+                        <button onClick={createNewChat} style={{display: "flex", alignItems: "center", width: "100%", padding: "0.5rem", marginTop: "1.3rem"}} type="button">
                             <i class="fa-solid fa-pen-to-square fw-normal"></i>
                         </button>
                     </div>
