@@ -8,13 +8,12 @@ import {v1 as uuidv1} from "uuid"
 function App() {
   const [prompt, setPrompt] = useState("");
   const [reply, setReply] = useState(null);
-  const [latestReply, setLatestReply] = useState(null);
   const [currThreadId, setCurrThreadId] = useState(uuidv1())
   const [isLoader, setIsLoader] = useState(false);
   const [prevChats, setPrevChats] = useState([]);
   const [newChat, setNewChat] = useState(true);
   const [allThreads, setAllThreads] = useState([]);
-  const [allFavThreads, setAllFavThraeds] = useState([]);
+  const [allFavThreads, setAllFavThreads] = useState([]);
 
   const providerValues = {
     prompt, setPrompt,
@@ -24,8 +23,7 @@ function App() {
     prevChats, setPrevChats,
     newChat, setNewChat,
     allThreads, setAllThreads,
-    allFavThreads, setAllFavThraeds,
-    latestReply, setLatestReply
+    allFavThreads, setAllFavThreads,
   };
 
   return (

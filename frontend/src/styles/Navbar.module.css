@@ -30,12 +30,31 @@ nav {
     background-color: #d3cfcf3e;
 }
 
-.profile {
+#profile {
     font-size: 13px;
     border: none;
     border-radius: 40px;
     padding: 0.4rem 0.5rem;
     background-color: #6c63ff;
+}
+
+#profile i::after {
+  display: none !important;
+}
+
+#profile .dropdown-toggle:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+#profile li {
+    border-radius: 0.6rem;
+    padding-block: 0.4rem;
+}
+
+#profile li:hover {
+    background-color: #d3cfcf3e !important;
 }
 
 #newChat {

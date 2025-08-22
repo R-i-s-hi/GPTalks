@@ -1,93 +1,101 @@
-import styles from "../styles/Chat.module.css"
-import {ScaleLoader} from 'react-spinners'
+import styles from "../styles/Chat.module.css";
+import { ScaleLoader } from "react-spinners";
 import { AllContext } from "../contexts/context";
-import { useContext, useState, useEffect,useRef } from "react";
-import ReactMarkdown from "react-markdown" 
+import { useContext, useState, useEffect} from "react";
+import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
-import "highlight.js/styles/github-dark.css"
+import "highlight.js/styles/github-dark.css";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function Chat() {
 
-    const {isLoader, prevChats, newChat, reply, latestReply, setLatestReply} = useContext(AllContext);
-    const lastMsgRef = useRef(null);
-    const isTyping = latestReply !== null && latestReply !== reply;
+  const { isLoader, prevChats, setPrevChats, newChat, reply} = useContext(AllContext);
+  const [latestReply, setLatestReply] = useState(null);
+  const {isAuthenticated, user} = useAuth0();
 
-    useEffect(() => {
-         const timeout = setTimeout(() => {
-            if (lastMsgRef.current) {
-            lastMsgRef.current.scrollIntoView({ behavior: "smooth" });
-            }
-        }, 100); // delay scroll to avoid jitter
+  useEffect(() => {
 
-        return () => clearTimeout(timeout);
-    }, [latestReply, isLoader]);
+    if(!prevChats?.length) return;
+    if (reply === null) {
+      setLatestReply(null);
+      return;
+    }
 
-    useEffect(() => {
-        if(reply === null){
-            setLatestReply(null);
-            return;   
-        }
+    const content = reply.split(" ");
 
-        const content = reply.split(" ");
+    let idx = 0;
+    const interval = setInterval(() => {
+      setLatestReply(content.slice(0, idx + 1).join(" "));
 
-        let idx = 0;
-        const interval = setInterval(() => {
-            setLatestReply(content.slice(0, idx+1).join(" "))
-        
-            idx++;
-            if(idx >= content.length) clearInterval(interval);
-        
-        }, 40)
+      idx++;
+      if (idx >= content.length) clearInterval(interval);
 
-        return () => clearInterval(interval);
+    }, 40);
 
-    }, [reply])
+    return () => clearInterval(interval);
+  }, [prevChats, reply]);
 
-    return ( 
-        <div className={styles.chatsDisplay}>
-            {(newChat || !prevChats) ? 
-                <h1 className={styles.newChatLine}>Start a New chat!</h1> : ""
-            }
-            
-            <div className={styles.chats}>
-                {
-                    prevChats?.map((chat, idx) => {
-                        const isLast = idx === prevChats.length - 1;
-                        return (
-                            <div
-      className={chat.role === "user" ? styles.userChat : styles.gptChat}
-      key={idx}
-      ref={isLast ? lastMsgRef : null}
-    >
-      {chat.role === "user" ? (
-        <p className={styles.userMsg}>{chat.content}</p>
+
+  return (
+    <div className={styles.chatsDisplay}>
+      {newChat || prevChats.length === 0 ? (
+        <>
+        <h1 className={styles.newChatLine}>
+          {
+            isAuthenticated && (<>Hi {user.name}, <br /> </>)
+          }
+          Start a New chat!
+        </h1>
+        </>
       ) : (
-        <div className={styles.gptMsg}>
-          <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
-            {chat.content}
-          </ReactMarkdown>
-        </div>
-      )}
-    </div>
-                        )
-                    })
-                }
-                {
-                    isTyping && (
-                    <div className={styles.gptMsg} ref={lastMsgRef} key={"typing"}>
-                        <ReactMarkdown  remarkPlugins={[remarkGfm]}
-  rehypePlugins={[rehypeRaw, rehypeHighlight]}>
-                            {latestReply}
+        <>
+            <div className={styles.chats}>
+                {prevChats?.map((chat, idx) => {
+                return (
+                    <div
+                    className={
+                        chat.role === "user" ? styles.userChat : styles.gptChat
+                    }
+                    key={idx}
+                    >
+                    {chat.role === "user" ? (
+                        <p className={styles.userMsg}>{chat.content}</p>
+                    ) : (
+                        <div className={styles.gptMsg}>
+                        <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
+                            {chat.content}
                         </ReactMarkdown>
+                        </div>
+                    )}
                     </div>
-                    )
-                }
-                {(isLoader) ? <ScaleLoader color="var(--text-color)" ref={lastMsgRef} style={{display: "flex", justifyContent: "center"}}/> : <></>}
+                );
+                })}
+                { prevChats.length > 0 && latestReply != null && (
+                <div className={styles.gptMsg}  key={"typing"}>
+                    <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                    >
+                    {latestReply}
+                    </ReactMarkdown>
+                </div>
+                )}
+                {isLoader ? (
+                <ScaleLoader
+                    color="var(--text-color)"
+                    style={{ display: "flex", justifyContent: "center" }}
+                />
+                ) : (
+                <></>
+                )}
             </div>
-        </div>
-     );
+        </>
+      )}
+
+    </div>
+  );
 }
 
 export default Chat;

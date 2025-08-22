@@ -17,11 +17,6 @@ mongoose.connect(process.env.DB_URL)
 
 app.use("/api", chatRoutes);
 
-// app.post("/test", async (req, res) => {
-//     getOpenAiResponse
-// })
-
-
 
 
 app.listen(5000, () => {

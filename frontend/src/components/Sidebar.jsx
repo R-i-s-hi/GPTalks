@@ -1,13 +1,30 @@
+import ThemeToggle from "../utils/ThemeToggle"
 import styles from "../styles/Sidebar.module.css";
+import { useAuth0 } from '@auth0/auth0-react';
 import { useContext, useEffect, useState } from "react";
 import { AllContext } from "../contexts/context";
 import {v1 as uuidv1} from "uuid";
+import "../App.css";
+import "../index.css"
 
 function Sidebar() {
 
-    const {allThreads, setAllThreads, allFavThreads, setAllFavThraeds, currThreadId, setCurrThreadId, newChat, setNewChat, prompt, setPrompt, reply, setReply, prevChats, setPrevChats, setLatestReply} = useContext(AllContext);
+    const {allThreads, setAllThreads, allFavThreads, setAllFavThreads, currThreadId, setCurrThreadId, newChat, setNewChat, prompt, setPrompt, reply, setReply, prevChats, setPrevChats, setLatestReply} = useContext(AllContext);
     let [isOpen, setIsOpen] = useState(false);
     let [showFavChats, setShowFavChats] = useState(false);
+    const {theme, toggleTheme} = ThemeToggle();
+    const {
+        isAuthenticated,
+        loginWithRedirect: login, 
+        logout: auth0Logout,  
+    } = useAuth0();
+
+    const signup = () =>
+        login({ authorizationParams: { screen_hint: "signup" } });
+
+    const logout = () =>
+        auth0Logout({ logoutParams: { returnTo: window.location.origin } });
+
 
     const getAllThreads = async () => {
 
@@ -26,26 +43,10 @@ function Sidebar() {
             const favChats = await fetch("http://localhost:5000/api/favthread");
             const res = await favChats.json();
             const favFillterdData = res.map(thread => ({threadId: thread.threadId, title: thread.title}));
-            setAllFavThraeds(favFillterdData);
+            setAllFavThreads(favFillterdData);
         } catch (e) {
             console.log(`getAllFavThraeds error: ${e}`);
         }
-    }
-
-    const sidebarHandler = () => {
-        setIsOpen((prev) => !prev);
-    }
-    const FavChatHandler = () => {
-        setShowFavChats((prev) => !prev);
-    }
-
-    const createNewChat = () => {
-        setNewChat(true);
-        setPrompt("");
-        setReply(null);
-        setLatestReply(null);
-        setCurrThreadId(uuidv1());
-        setPrevChats([]);
     }
 
     const changeThread = async(threadId) => {
@@ -56,6 +57,21 @@ function Sidebar() {
         try {
             const response = await fetch(`http://localhost:5000/api/thread/${threadId}`);
             const data = await response.json();
+            setPrevChats(data);
+            setNewChat(false);
+            await getAllThreads();
+        } catch (e) {
+            console.log(`changeThread error: ${e}`);
+        }
+    }
+    const changeFavThread = async(threadId) => {
+        setCurrThreadId(threadId); // the threadId of the new chat window set to the current thread
+        setPrompt("");
+        setReply(null);
+
+        try {
+            const response = await fetch(`http://localhost:5000/api/favthread/${threadId}`);
+            const data = await response.json();
             console.log(data);
             setPrevChats(data);
             setNewChat(false);
@@ -64,15 +80,81 @@ function Sidebar() {
         }
     }
 
+    const deleteThread = async(threadId) => {
+        try {
+            await fetch(`http://localhost:5000/api/thread/${threadId}`, {method: "DELETE"});
+            setAllThreads((prev) => prev.filter(thread => thread.threadId !== threadId));
+
+            if(currThreadId === threadId) {
+                createNewChat();
+            }
+        } catch (e) {
+            console.log(`deleteThread error: ${e}`);
+        }
+    }
+    const deleteFavThread = async(threadId) => {
+        try {
+            await fetch(`http://localhost:5000/api/favthread/${threadId}`, {method: "DELETE"});
+            setAllFavThreads((prev) => prev.filter(thread => thread.threadId !== threadId));
+            console.log("archieved chat deleted successfully");
+            await fetch(`http://localhost:5000/api/thread/${threadId}`, {method: "DELETE"});
+            console.log("archieved chat deleted from all chats successfully");
+            setAllThreads((prev) => prev.filter(thread => thread.threadId !== threadId));
+
+            if(currThreadId === threadId) {
+                createNewChat();
+            }
+
+        } catch (e) {
+            console.log(`deleteFavThread error: ${e}`);
+        }
+    }
+
+    const ArchieveChat = async(threadId) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/favchat/${threadId}`, {method: "POST"});
+            const data = await response.json();
+            console.log(data);
+            console.log(`Archieved chat successfully.`);
+            await getAllFavThreads();
+        } catch (e) {
+            console.log(`ArchieveChat error: ${e}`);
+        }
+    }
+    const UnarchieveChat = async(threadId) => {
+        try {
+            await fetch(`http://localhost:5000/api/favthread/${threadId}`, {method: "DELETE"});
+            console.log("Unarchieved chat successfully");
+        } catch (e) {
+            console.log(`UnarchieveChat error: ${e}`);
+        }
+    }
+
+    const sidebarHandler = () => {
+        setIsOpen((prev) => !prev);
+    }
+    const FavChatHandler = () => {
+        setShowFavChats((prev) => !prev);
+    }
+    const createNewChat = () => {
+        setNewChat(true);
+        setPrompt("");
+        setReply(null);
+        setLatestReply(null);
+        setCurrThreadId(uuidv1());
+        setPrevChats([]);
+    }
+
     useEffect(() => {
         getAllThreads();
         getAllFavThreads();
-    }, [currThreadId]);
+    }, [allThreads, newChat]);
 
     return (
         <div>
             {isOpen ? 
                 (<div className={`${styles.sidebarContainer} ${!isOpen ? styles.offcanvas : ''}`}>
+                    
                     <div className={styles.top}>
                         <p className="mb-0 fs-4"><i class="fa-solid fa-hexagon-nodes"></i></p>
                         <button onClick={sidebarHandler} type="button">
@@ -94,8 +176,39 @@ function Sidebar() {
                             <>       
                                 <ul>
                                     {
-                                        allFavThreads? (allFavThreads.map((thread, idx) => (
-                                            <li key={idx}>{thread.title}</li>
+                                        allFavThreads.length > 0? (allFavThreads.map((thread, idx) => (
+                                            <li className={thread.threadId === currThreadId ? styles.highlighted : " "} style={{display: "flex", justifyContent: "space-between", alignItems: "center"}} key={idx} onClick={() => {changeFavThread(thread.threadId);}} >
+                                                <span style={{maxWidth: "170px"}}>{thread.title}</span>
+                                                <span class="d-flex align-items-center cursor-pointer btn-group">
+                                                    <i class="fa-solid fa-ellipsis btn btn-sm dropdown-toggle" id={styles.optnBtn} type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                                    <ul class="dropdown-menu" style={{padding: "0.4rem"}}>
+                                                        <li class="dropdown-item" style={{fontSize: "0.8rem", marginTop: "0"}}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                UnarchieveChat(thread.threadId);
+                                                                const dropdown = document.querySelector(".dropdown-menu.show");
+                                                                if (dropdown) {
+                                                                    dropdown.classList.remove("show");
+                                                                }
+                                                            }}
+                                                        >
+                                                            <i class="fa-solid fa-box-open" style={{marginRight: "0.4rem"}}></i> Unarchieve
+                                                        </li>
+                                                        <li class="dropdown-item" style={{fontSize: "0.8rem", marginTop: "0"}}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                deleteFavThread(thread.threadId);
+                                                                const dropdown = document.querySelector(".dropdown-menu.show");
+                                                                if (dropdown) {
+                                                                    dropdown.classList.remove("show");
+                                                                }
+                                                            }}
+                                                        >
+                                                            <i class="fa-solid fa-trash" style={{marginRight: "0.4rem"}}></i> Delete
+                                                        </li>
+                                                    </ul>
+                                                </span>
+                                            </li>
                                         ))) : (
                                             <>No archieved chats</>
                                         )
@@ -107,21 +220,57 @@ function Sidebar() {
                             <>
                                 <ul>
                                     {
-                                        allThreads?.map((thread, idx) => (
-                                            <li key={idx} onClick={() => {changeThread(thread.threadId);}}>{thread.title}</li>
-                                        )) 
-                                        
+                                       allThreads.length>0 ? (allThreads?.map((thread, idx) => (
+                                            <li className={thread.threadId === currThreadId ? styles.highlighted : " "} style={{display: "flex", justifyContent: "space-between", alignItems: "center"}} key={idx} onClick={() => {changeThread(thread.threadId)}}>
+                                                <span style={{maxWidth: "170px"}}>{thread.title}</span>
+                                                <span className="d-flex align-items-center cursor-pointer btn-group">
+                                                    <i class="fa-solid fa-ellipsis btn btn-sm dropdown-toggle" id={styles.optnBtn} type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="true"></i>
+                                                    <ul class="dropdown-menu" style={{padding: "0.4rem"}}>
+                                                        <li class="dropdown-item" style={{fontSize: "0.8rem", marginTop: "0"}}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+
+                                                                ArchieveChat(thread.threadId);
+                                                                const dropdown = document.querySelector(".dropdown-menu.show");
+                                                                if (dropdown) {
+                                                                    dropdown.classList.remove("show");
+                                                                }
+                                                            }}
+                                                        >
+                                                            <i class="fa-solid fa-box" style={{marginRight: "0.4rem"}}></i> Archieve
+                                                        </li>
+                                                        <li class="dropdown-item" style={{fontSize: "0.8rem", marginTop: "0"}}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                deleteThread(thread.threadId);
+                                                                const dropdown = document.querySelector(".dropdown-menu.show");
+                                                                if (dropdown) {
+                                                                    dropdown.classList.remove("show");
+                                                                }
+                                                            }}
+                                                        >
+                                                            <i class="fa-solid fa-trash" style={{marginRight: "0.4rem"}}></i> Delete
+                                                        </li>
+                                                    </ul>
+                                                </span>
+                                            </li>
+                                        ))) : 
+                                        (
+                                            <>No chats yet</>
+                                        )  
                                     } 
                                 </ul>
                             </>
 
                         )}
                     </div>
-                    <hr className="mt-1 mb-1" style={{color: "#d3cfcfff"}}></hr>
-                    <div>
+
+                    <hr className="mt-1 mb-1" style={{border: "0.5px solid var(--text-color)",opacity: 0.1}}></hr>
+
+                    <div >
                         {showFavChats ? (
-                            <button className={styles.bottomBtn1} onClick={FavChatHandler}> 
-                                    <i class="fa-regular fa-copy ps-2"></i>
+                            <button className={styles.bottomBtn1} onClick={FavChatHandler} > 
+                                    <i class="fa-solid fa-list-ul ps-2"></i>
                                     <p className="mb-0 ms-3">All Chats</p>
                             </button>
                         ) : (
@@ -131,11 +280,12 @@ function Sidebar() {
                             </button> 
                         )} 
                     </div>
+
                 </div>) :
                 (<div className={styles.sidebarContainerClosed}>
                     <div style={{height: "96%"}}>
                         <button onClick={sidebarHandler} type="button">
-                            <i class="fa-solid fa-bars-staggered"></i>
+                            <i className="fa-solid fa-bars-staggered"></i>
                         </button>
 
                         
@@ -144,9 +294,43 @@ function Sidebar() {
                         </button>
                     </div>
 
-                    <button className={styles.profile}>
-                        <i class="fa-solid fa-regular fa-user text-white"></i>
-                    </button>
+                                    <button id={styles.profile}>
+                                        <i class="fa-solid fa-regular fa-user text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                        <ul class="dropdown-menu" style={{padding: "0.4rem", backgroundColor: 'var(--sidebar-color)', border: "1px solid #d3cfcf3e"}}>
+                                            
+                                            <li class="dropdown-item" onClick={toggleTheme} style={{fontSize: "0.8rem", marginTop: "0"}}>
+                                                    {
+                                                        theme == "light" ? (
+                                                            <span class="d-flex align-items-center" style={{fontSize: "12px"}}>
+                                                                <i className="lni lni-moon-half-right-5 mb-0" style={{marginRight: "0.4rem", fontSize: "14px"}}></i> Dark mode
+                                                            </span>
+                                                        ) : (
+                                                            <span class="d-flex align-items-center" style={{fontSize: "12px"}}>
+                                                                <i class="lni lni-sun-1 mb-0" style={{marginRight: "0.4rem", fontSize: "14px"}}></i> Light mode
+                                                            </span>
+                                                        )
+                                                    }
+                                            </li>
+                                            <li class="dropdown-item" onClick={isAuthenticated ? logout : signup} style={{fontSize: "0.8rem", marginTop: "0"}}>
+                                                <span style={{fontSize: "12px"}}>
+                                                    {
+                                                        isAuthenticated ?
+                                                        (   
+                                                            <>
+                                                                <i class="fa-solid fa-arrow-right-from-bracket" style={{marginRight: "0.4rem"}}></i> Logout
+                                                            </>
+                                                        ) : (
+                                                            
+                                                            <>
+                                                                <i class="fa-solid fa-arrow-right-to-bracket" style={{marginRight: "0.4rem"}}></i> Signup / Login
+                                                            </>
+                                                        )
+                                                    }
+                    
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </button>
                     
                 </div>)
             }

@@ -104,6 +104,14 @@ const saveChat = async (req, res) => {
         thread.updatedAt = new Date();
 
         await thread.save();
+
+        const favThread = await FavThread.findOne({ threadId: id });
+        if (favThread) {
+            favThread.messages = thread.messages;
+            favThread.updatedAt = new Date();
+            await favThread.save();
+        }
+
         res.json({ reply: assistantReply });
     } catch (err) {
         console.error("saveChat error:", err);
@@ -112,32 +120,24 @@ const saveChat = async (req, res) => {
 };
 
 const saveFavChat = async(req, res) => {
-    const {id, message} = req.body;
-
-    if(!id || !message) res.status(400).json({message: "missing required fields!"})
+    const {id} = req.params;
 
     try {
-        let thread = await FavThread.findOne({threadId: id});
 
-        if(!thread) {
-            thread = new FavThread({
+        const thread = await Thread.findOne({ threadId: id });
+        const isFavThreadExist = await FavThread.findOne({threadId: id});
+
+        if(isFavThreadExist) {
+            return res.status(200).json({ message: "Archieved chat already exists!" });
+        } else { 
+            const newthread = new FavThread({
                 threadId: id,
-                title: message,
-                messages: [{role: "user", content: message}]
+                title: thread.title,
+                messages: thread.messages,
             });
-
-            await thread.save();
-        
-        } else {
-            thread.messages.push({role: "user", content: message});
+            await newthread.save();
+            res.status(200).json({message: "Chat saved as favorite successfully"});
         }
-
-        const assistantReply = await getOpenAiResponse(message);
-        thread.messages.push({role: "assistant", content: assistantReply});
-        thread.updatedAt = new Date();
-
-        await thread.save();
-        res.json({reply: assistantReply});
     } catch (err) {
         res.status(500).json({message: `Something went wrong`});
         console.error(err);

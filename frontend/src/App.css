@@ -1,3 +1,10 @@
+#root {
+    --bs-body-bg: var(--bg-color);
+    --bs-body-color: var(--text-color);
+    --bs-border-width: 0;
+    --bs-border-radius: 1rem;
+    --bs-dropdown-padding-x: 0.5rem;
+}
 .rootComponent {
     display: flex;
     height: 100vh;

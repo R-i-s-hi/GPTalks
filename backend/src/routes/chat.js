@@ -7,7 +7,7 @@ router.get("/thread", getAllChats);
 router.get("/favthread", getAllFavChats);
 
 router.post("/chat", saveChat);
-router.post("/favchat", saveFavChat);
+router.post("/favchat/:id", saveFavChat);
 
 router.get("/thread/:id", getChat);
 router.get("/favthread/:id", getFavChat);

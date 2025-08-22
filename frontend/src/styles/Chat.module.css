@@ -22,6 +22,7 @@
 .newChatLine {
     display: flex;
     justify-content: center;
+    text-align: center;
     align-items: center;
     height: 95%;
     margin-bottom: 0;
@@ -67,6 +68,10 @@ pre code {
   color: var(--code-color);
   background-color: var(--code-bg) !important;
   border-radius: 12px;
+}
+
+.hljs {
+    color: var(--code-color) !important;
 }
 
 @media(max-width: 880px) {
