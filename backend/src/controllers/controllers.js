@@ -225,7 +225,7 @@ const saveFavChat = async(req, res) => {
                 messages: thread.messages,
             });
             await newthread.save();
-            res.status(200).json({message: "Chat saved as favorite successfully"});
+            res.status(200).json({message: "Chat Archieved"});
         }
     } catch (err) {
         res.status(500).json({message: "Something went wrong!"});
