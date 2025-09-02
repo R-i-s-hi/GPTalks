@@ -55,7 +55,7 @@ function ChatInput() {
         };
 
         try {
-            const response = await fetch("http://localhost:5000/api/chat", optn);
+            const response = await fetch("https://gptalks-backend.onrender.com/api/chat", optn);
             const rep = await response.json();
 
             if (rep?.reply) {
