@@ -55,8 +55,8 @@ const transferOwnership = async (req, res) => {
 
     res.clearCookie("guestId", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "Strict",
+        secure: true,
+        sameSite: "None",
         path: "/"
     });
 
@@ -146,8 +146,8 @@ const saveChat = async (req, res) => {
                 if(owner.startsWith("guest-")) {
                     res.cookie("guestId", owner, {
                         httpOnly: true,
-                        secure: process.env.NODE_ENV === "production",
-                        sameSite: "Strict",
+                        secure: true,
+                        sameSite: "None",
                         maxAge: 86400000
                     });
                 }
