@@ -22,6 +22,10 @@ const ThreadSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    ownerId: {
+        type: String,
+        required: true
+    },
     title: {
         type: String,
         default: "New Chat"
@@ -34,7 +38,21 @@ const ThreadSchema = new mongoose.Schema({
     updatedAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    isGuest: {
+        type: Boolean,
+        default: function () {
+            return this.ownerId?.startsWith("guest-");
+        }
+    },
 });
+
+ThreadSchema.index(
+  { createdAt: 1 },
+  {
+    expireAfterSeconds: 86400,
+    partialFilterExpression: { isGuest: true }
+  }
+);
 
 export default mongoose.model("Thread", ThreadSchema);

@@ -69,16 +69,17 @@
 }
 
 .tagLine {
+    font-size: small;
     margin-top: 1rem;
     padding-inline: 1rem;   
     color: var(--btn-text-color);
-    opacity: 0.7; 
+    opacity: 0.6; 
 }
 
 .main {
     color: var(--text-color);
     margin-block: 1rem 1rem;
-    height: calc(100vh - 16rem);
+    height: calc(100vh - 16.5rem);
     overflow-y: auto;
 }
 .main > div {

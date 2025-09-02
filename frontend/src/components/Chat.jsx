@@ -11,8 +11,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 function Chat() {
 
-  const { isLoader, prevChats, setPrevChats, newChat, reply} = useContext(AllContext);
-  const [latestReply, setLatestReply] = useState(null);
+  const { isLoader, prevChats, setPrevChats, newChat, reply, latestReply, setLatestReply} = useContext(AllContext);
   const {isAuthenticated, user} = useAuth0();
 
   useEffect(() => {
@@ -48,6 +47,14 @@ function Chat() {
           }
           Start a New chat!
         </h1>
+        {isLoader ? (
+                <ScaleLoader
+                    color="var(--text-color)"
+                    style={{ display: "flex", justifyContent: "center" }}
+                />
+                ) : (
+                <></>
+                )}
         </>
       ) : (
         <>
@@ -72,7 +79,7 @@ function Chat() {
                     </div>
                 );
                 })}
-                { prevChats.length > 0 && latestReply != null && (
+                { prevChats.length > 0 && latestReply != null && prevChats[prevChats.length - 1]?.content !== reply && (
                 <div className={styles.gptMsg}  key={"typing"}>
                     <ReactMarkdown
                     remarkPlugins={[remarkGfm]}

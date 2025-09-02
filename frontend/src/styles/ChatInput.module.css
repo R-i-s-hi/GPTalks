@@ -2,16 +2,15 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.25rem;
     width: 100%;
 }
 
 .chatInputContainer > :nth-child(1) {
-    height: 105px;
     flex: 0 0 auto;
     max-width: 900px;
     background-color: var(--bg-color);
     margin-inline: clamp(5%, 20%, 20%);
+    padding: 0.5rem;
     border-radius: 25px;
     border: 2px solid var(--input-border);
     box-shadow: var(--input-box-shadow);
@@ -22,31 +21,40 @@
     font-weight: 300 !important;
     text-align: center;
     flex-shrink: 0;
+    padding-top: 0.8rem;
 }
 
-.chatInputContainer input {
-    flex-grow: 1;
-    height: 50%;
+.chatInputContainer textarea {
+    flex: 1;
     border: none;
+    resize: none;
+    overflow: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
     color: var(--text-color);
-    border-top-left-radius: 25px;
-    border-top-right-radius: 25px;
     background-color: var(--bg-color);
-    padding-inline: 1.5rem;
+    padding-inline: 1rem;
+    padding-top: 0.35rem;
 }
 
-.chatInputContainer input:focus {
+textarea::-webkit-scrollbar {
+  display: none;
+}
+
+.chatInputContainer textarea:focus {
     outline: none;
     box-shadow: none;
 }
 
 .icon {
-    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: 300 !important;
-    padding-inline: 0.5rem;
-    padding-block: 0.4rem;
+    font-size: 13px;
+    height: 35px;
+    width: 35px;
     border-radius: 40px;
-    margin-bottom: 10px;
 }
 
 .icon:hover {
@@ -56,15 +64,14 @@
 .sendicon {
     display: flex;
     align-items: center;
-    font-size: 15px;
+    justify-content: center;
     font-weight: 300 !important;
-    padding-inline: 0.65rem;
-    padding-block: 0.7rem;
+    font-size: 13px;
+    height: 35px;
+    width: 35px;
     border-radius: 40px;
     background-color: var(--text-color);
     color: var(--bg-color);
-    font-size: 13px;
-    margin-bottom: 10px;
 }
 .tools {
     display: flex;
@@ -79,7 +86,6 @@
 
     .chatInputContainer input {
         padding-inline: 1rem;
-        margin-inline: 1rem !important;
     }
     .tools {
         margin-inline: 0rem !important;
@@ -96,6 +102,9 @@
 @media(max-width: 630px) {
     .bottom_line {
         display: none;
+    }
+    .chatInputContainer textarea {
+        padding-inline: 0.3rem;
     }
     .tool-span {
         margin-inline-start: 0 !important;

@@ -22,6 +22,10 @@ const FavThreadSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    ownerId: {
+        type: String,
+        required: true
+    },
     title: {
         type: String,
         default: "New Chat"

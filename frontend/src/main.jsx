@@ -3,8 +3,7 @@ import App from './App.jsx'
 import { createRoot } from 'react-dom/client'
 import { Auth0Provider } from '@auth0/auth0-react';
 
-console.log(import.meta.env.VITE_AUTH0_DOMAIN);
-console.log(import.meta.env.VITE_AUTH0_CLIENT_ID);
+
 createRoot(document.getElementById('root')).render(
   <Auth0Provider
       domain={import.meta.env.VITE_AUTH0_DOMAIN}

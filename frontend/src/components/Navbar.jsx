@@ -19,7 +19,7 @@ function Navbar() {
     const logout = () =>
         auth0Logout({ logoutParams: { returnTo: window.location.origin } });
 
-    console.log(user);
+    
     return (
         <>
         <nav className="d-flex justify-content-between align-items-center py-3 px-4">
@@ -36,6 +36,29 @@ function Navbar() {
                     <i class="fa-solid fa-regular fa-user text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                     <ul class="dropdown-menu" style={{padding: "0.4rem", backgroundColor: 'var(--sidebar-color)', border: "1px solid #d3cfcf3e"}}>
                         
+                        {
+                            isAuthenticated ? 
+                            (
+                                <>
+                                    <div class="d-flex gap-3 align-items-center justify-content-between dropdown-header" style={{cursor: "default"}}>
+                                        
+                                            <img src={user.picture} height="34px" width="34px" style={{borderRadius: "18px"}}></img>
+                                        
+                                        <div class="d-flex flex-column" style={{color: "var(--text-color)"}}>
+                                            <p class="mb-0" style={{fontSize: "0.8rem"}}>
+                                                {user.name}
+                                            </p>
+                                            <p class="mb-0" style={{fontSize: "0.7rem", opacity: "0.7"}}>
+                                                {user.email}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="dropdown-divider mx-2" style={{border: "1px solid #d3cfcf3e"}}/>
+                                </>
+                            ) : (
+                                <></>
+                            )
+                        }
                         <li class="dropdown-item" onClick={toggleTheme} style={{fontSize: "0.8rem", marginTop: "0"}}>
                                 {
                                     theme == "light" ? (

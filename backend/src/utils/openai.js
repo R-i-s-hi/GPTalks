@@ -1,6 +1,6 @@
 import "dotenv/config"
 
-const getOpenAiResponse = async (message) => {
+const getOpenAiResponse = async (message , model) => {
     const url = 'https://openrouter.ai/api/v1/chat/completions';
     const options = {
         method: 'POST',
@@ -9,7 +9,7 @@ const getOpenAiResponse = async (message) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            model: process.env.MODEL,
+            model: model,
             messages: [
               {
                 role: "user",

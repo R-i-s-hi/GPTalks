@@ -57,7 +57,7 @@
 
 pre {
   background-color: var(--code-bg);
-  flex-grow: 1;
+  flex: 1;
   padding: 1rem;
   border-radius: 12px;
 }
@@ -65,13 +65,15 @@ pre {
 pre code {
   font-family: 'Fira Code', monospace;
   font-size: 0.9rem;
+  word-wrap: break-word;
   color: var(--code-color);
   background-color: var(--code-bg) !important;
-  border-radius: 12px;
+  overflow-x: auto;
 }
 
 .hljs {
     color: var(--code-color) !important;
+      overflow-x: auto;
 }
 
 @media(max-width: 880px) {
@@ -85,5 +87,6 @@ pre code {
     pre {
         white-space: pre-wrap;
         word-break: break-word;
+        overflow-x: auto;
     }
 }
