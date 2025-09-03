@@ -1,17 +1,20 @@
-import ThemeToggle from "../utils/ThemeToggle"
 import "../index.css"
 import styles from "../styles/Navbar.module.css"
 import { useAuth0 } from '@auth0/auth0-react';
+import { useContext } from "react";
+import { AllContext } from "../contexts/context";
 
 function Navbar() {
 
-    const {theme, toggleTheme} = ThemeToggle();
     const {
         isAuthenticated,
         loginWithRedirect: login, 
         logout: auth0Logout, 
         user, 
     } = useAuth0();
+
+    const {theme, toggleTheme} = useContext(AllContext);
+
 
     const signup = () =>
         login({ authorizationParams: { screen_hint: "signup" } });

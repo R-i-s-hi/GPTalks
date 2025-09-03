@@ -1,4 +1,3 @@
-import ThemeToggle from "../utils/ThemeToggle";
 import styles from "../styles/Sidebar.module.css";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useContext, useEffect, useState } from "react";
@@ -26,11 +25,12 @@ function Sidebar() {
     prevChats,
     setPrevChats,
     setLatestReply,
+    theme,
+    toggleTheme
   } = useContext(AllContext);
 
   let [isOpen, setIsOpen] = useState(false);
   let [showFavChats, setShowFavChats] = useState(false);
-  const { theme, toggleTheme } = ThemeToggle();
   const {
     isAuthenticated,
     loginWithRedirect: login,
@@ -485,7 +485,7 @@ function Sidebar() {
           </div>
 
           <hr
-            className="mt-1 mb-1"
+            className="mt-1 mb-2"
             style={{ border: "0.5px solid var(--text-color)", opacity: 0.1 }}
           ></hr>
 
@@ -511,7 +511,7 @@ function Sidebar() {
         </div>
       ) : (
         <div className={styles.sidebarContainerClosed}>
-          <div style={{ height: "96%" }}>
+          <div>
             <button onClick={sidebarHandler} type="button">
               <i className="fa-solid fa-bars-staggered"></i>
             </button>

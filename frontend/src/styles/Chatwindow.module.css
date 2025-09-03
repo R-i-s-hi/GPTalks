@@ -1,5 +1,6 @@
 .ChatWindowContainer{ 
     flex-grow: 1;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
 }
@@ -8,7 +9,7 @@
     overflow-y: auto;
 }
 .ChatWindowContainer > :nth-child(3) {
-    height: 105px; 
+    height: 75px; 
     flex-shrink: 0;
     margin-bottom: 0.5rem;
 }

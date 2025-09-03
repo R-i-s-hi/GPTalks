@@ -1,6 +1,7 @@
 import './App.css'
 import Sidebar from './components/Sidebar'
 import ChatWindow from './components/ChatWindow'
+import ThemeToggle from "./utils/ThemeToggle.js"
 import {AllContext} from "./contexts/context.jsx"
 import { useState, useEffect } from 'react'
 import {v1 as uuidv1} from "uuid"
@@ -16,6 +17,7 @@ function App() {
   const [allThreads, setAllThreads] = useState([]);
   const [allFavThreads, setAllFavThreads] = useState([]);
   const [latestReply, setLatestReply] = useState(null);
+  const {theme, toggleTheme} = ThemeToggle();
 
   const providerValues = {
     prompt, setPrompt,
@@ -27,6 +29,7 @@ function App() {
     allThreads, setAllThreads,
     allFavThreads, setAllFavThreads,
     latestReply, setLatestReply,
+    theme, toggleTheme
   };
   return (
     <div className='rootComponent'>
@@ -43,6 +46,7 @@ function App() {
         <ChatWindow />
       </AllContext.Provider>
     </div>
+
   )
 }
 
