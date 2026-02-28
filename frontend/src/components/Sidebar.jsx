@@ -50,7 +50,7 @@ function Sidebar() {
     try {
       const userId = user?.sub || null;
       const chats = await fetch(
-        `http://localhost:5000/api/thread?userId=${userId}`,
+        `https://gptalks-backend.onrender.com/api/thread?userId=${userId}`,
         { method: "GET", credentials: "include" }
       );
       const res = await chats.json();
@@ -67,7 +67,7 @@ function Sidebar() {
     try {
       const userId = user?.sub || null;
       const favChats = await fetch(
-        `http://localhost:5000/api/favthread?userId=${userId}`,
+        `https://gptalks-backend.onrender.com/api/favthread?userId=${userId}`,
         { method: "GET", credentials: "include" }
       );
       const res = await favChats.json();
@@ -89,7 +89,7 @@ function Sidebar() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/thread/${threadId}`
+        `https://gptalks-backend.onrender.com/api/thread/${threadId}`
       );
       const data = await response.json();
       setPrevChats(data);
@@ -106,7 +106,7 @@ function Sidebar() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/favthread/${threadId}`
+        `https://gptalks-backend.onrender.com/api/favthread/${threadId}`
       );
       const data = await response.json();
       console.log(data);
@@ -119,7 +119,7 @@ function Sidebar() {
 
   const deleteThread = async (threadId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/thread/${threadId}`, {
+      const response = await fetch(`https://gptalks-backend.onrender.com/api/thread/${threadId}`, {
         method: "DELETE",
       });
       const data = await response.json();
@@ -146,7 +146,7 @@ function Sidebar() {
   const ArchieveChat = async (threadId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/favchat/${threadId}?ownerId=${user.sub}`,
+        `https://gptalks-backend.onrender.com/api/favchat/${threadId}?ownerId=${user.sub}`,
         { method: "POST" }
       );
       const data = await response.json();
@@ -169,7 +169,7 @@ function Sidebar() {
   };
   const UnarchieveChat = async (threadId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/favthread/${threadId}`, {
+      const response = await fetch(`https://gptalks-backend.onrender.com/api/favthread/${threadId}`, {
         method: "DELETE",
       });
       const data = await response.json();
@@ -207,7 +207,7 @@ function Sidebar() {
     const guestId = localStorage.getItem("guestId");
     if (!guestId) return;
 
-    fetch("http://localhost:5000/api/threads/transfer-ownership", {
+    fetch("https://gptalks-backend.onrender.com/api/threads/transfer-ownership", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
