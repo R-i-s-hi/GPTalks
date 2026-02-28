@@ -157,6 +157,7 @@ const saveChat = async (req, res) => {
         }
 
         const models = [
+            "openai/gpt-oss-120b:free",
             "openai/gpt-oss-20b:free",
             "qwen/qwen3-14b:free",
             "mistralai/mistral-7b-instruct:free"

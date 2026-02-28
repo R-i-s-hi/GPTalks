@@ -6,11 +6,13 @@
 }
 
 .chatInputContainer > :nth-child(1) {
+    display: flex !important;
+    align-items: center;
     flex: 0 0 auto;
     max-width: 900px;
     background-color: var(--bg-color);
     margin-inline: clamp(5%, 20%, 20%);
-    padding: 0.5rem;
+    padding: 0.38rem;
     border-radius: 25px;
     border: 2px solid var(--input-border);
     box-shadow: var(--input-box-shadow);
@@ -34,7 +36,6 @@
     color: var(--text-color);
     background-color: var(--bg-color);
     padding-inline: 1rem;
-    padding-top: 0.35rem;
 }
 
 textarea::-webkit-scrollbar {
@@ -66,9 +67,9 @@ textarea::-webkit-scrollbar {
     align-items: center;
     justify-content: center;
     font-weight: 300 !important;
-    font-size: 13px;
-    height: 35px;
-    width: 35px;
+    font-size: 12px;
+    height: 30px;
+    width: 30px;
     border-radius: 40px;
     background-color: var(--text-color);
     color: var(--bg-color);

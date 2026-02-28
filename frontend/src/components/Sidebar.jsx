@@ -50,7 +50,7 @@ function Sidebar() {
     try {
       const userId = user?.sub || null;
       const chats = await fetch(
-        `https://gptalks-backend.onrender.com/api/thread?userId=${userId}`,
+        `http://localhost:5000/api/thread?userId=${userId}`,
         { method: "GET", credentials: "include" }
       );
       const res = await chats.json();
@@ -67,7 +67,7 @@ function Sidebar() {
     try {
       const userId = user?.sub || null;
       const favChats = await fetch(
-        `https://gptalks-backend.onrender.com/api/favthread?userId=${userId}`,
+        `http://localhost:5000/api/favthread?userId=${userId}`,
         { method: "GET", credentials: "include" }
       );
       const res = await favChats.json();
@@ -89,7 +89,7 @@ function Sidebar() {
 
     try {
       const response = await fetch(
-        `https://gptalks-backend.onrender.com/api/thread/${threadId}`
+        `http://localhost:5000/api/thread/${threadId}`
       );
       const data = await response.json();
       setPrevChats(data);
@@ -106,7 +106,7 @@ function Sidebar() {
 
     try {
       const response = await fetch(
-        `https://gptalks-backend.onrender.com/api/favthread/${threadId}`
+        `http://localhost:5000/api/favthread/${threadId}`
       );
       const data = await response.json();
       console.log(data);
@@ -119,7 +119,7 @@ function Sidebar() {
 
   const deleteThread = async (threadId) => {
     try {
-      const response = await fetch(`https://gptalks-backend.onrender.com/api/thread/${threadId}`, {
+      const response = await fetch(`http://localhost:5000/api/thread/${threadId}`, {
         method: "DELETE",
       });
       const data = await response.json();
@@ -146,7 +146,7 @@ function Sidebar() {
   const ArchieveChat = async (threadId) => {
     try {
       const response = await fetch(
-        `https://gptalks-backend.onrender.com/api/favchat/${threadId}?ownerId=${user.sub}`,
+        `http://localhost:5000/api/favchat/${threadId}?ownerId=${user.sub}`,
         { method: "POST" }
       );
       const data = await response.json();
@@ -169,7 +169,7 @@ function Sidebar() {
   };
   const UnarchieveChat = async (threadId) => {
     try {
-      const response = await fetch(`https://gptalks-backend.onrender.com/api/favthread/${threadId}`, {
+      const response = await fetch(`http://localhost:5000/api/favthread/${threadId}`, {
         method: "DELETE",
       });
       const data = await response.json();
@@ -207,7 +207,7 @@ function Sidebar() {
     const guestId = localStorage.getItem("guestId");
     if (!guestId) return;
 
-    fetch("https://gptalks-backend.onrender.com/api/threads/transfer-ownership", {
+    fetch("http://localhost:5000/api/threads/transfer-ownership", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -531,114 +531,68 @@ function Sidebar() {
             </button>
           </div>
 
-          <button id={styles.profile}>
-            <i
-              class="fa-solid fa-regular fa-user text-white dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            ></i>
-            <ul
-              class="dropdown-menu"
-              style={{
-                padding: "0.4rem",
-                backgroundColor: "var(--sidebar-color)",
-                border: "1px solid #d3cfcf3e",
-              }}
-            >
-              {isAuthenticated ? (
-                <>
-                  <div
-                    class="d-flex gap-3 align-items-center justify-content-between dropdown-header"
-                    style={{ cursor: "default" }}
-                  >
-                    <img
-                      src={user.picture}
-                      height="34px"
-                      width="34px"
-                      style={{ borderRadius: "18px" }}
-                    ></img>
+          <div className="dropdown">
+            <button className="dropdown-toggle" id={styles.profile} type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-regular fa-user text-white"></i>
+                <ul class="dropdown-menu" style={{padding: "0.4rem", backgroundColor: 'var(--sidebar-color)', border: "1px solid #d3cfcf3e"}}>
+                                    
+                    {
+                        isAuthenticated ? 
+                        (
+                            <>
+                                <div class="d-flex gap-3 align-items-center justify-content-between dropdown-header" style={{cursor: "default"}}>
+                                    
+                                        <img src={user.picture} height="34px" width="34px" style={{borderRadius: "18px"}}></img>
+                                    
+                                    <div class="d-flex flex-column" style={{color: "var(--text-color)"}}>
+                                        <p class="mb-0" style={{fontSize: "0.8rem"}}>
+                                            {user.name}
+                                        </p>
+                                        <p class="mb-0" style={{fontSize: "0.7rem", opacity: "0.7"}}>
+                                            {user.email}
+                                        </p>
+                                    </div>
+                                </div>
+                                <hr class="dropdown-divider mx-2" style={{border: "1px solid #d3cfcf3e"}}/>
+                            </>
+                        ) : (
+                            <></>
+                        )
+                    }
+                    <li class="dropdown-item" onClick={toggleTheme} style={{fontSize: "0.8rem", marginTop: "0"}}>
+                            {
+                                theme == "light" ? (
+                                    <span class="d-flex align-items-center" style={{fontSize: "12px"}}>
+                                        <i className="lni lni-moon-half-right-5 mb-0" style={{marginRight: "0.4rem", fontSize: "14px"}}></i> Dark mode
+                                    </span>
+                                ) : (
+                                    <span class="d-flex align-items-center" style={{fontSize: "12px"}}>
+                                        <i class="lni lni-sun-1 mb-0" style={{marginRight: "0.4rem", fontSize: "14px"}}></i> Light mode
+                                    </span>
+                                )
+                            }
+                    </li>
+                    <li class="dropdown-item" onClick={isAuthenticated ? logout : signup} style={{fontSize: "0.8rem", marginTop: "0"}}>
+                        <span style={{fontSize: "12px"}}>
+                            {
+                                isAuthenticated ?
+                                (   
+                                    <>
+                                        <i class="fa-solid fa-arrow-right-from-bracket" style={{marginRight: "0.4rem"}}></i> Logout
+                                    </>
+                                ) : (
+                                    
+                                    <>
+                                        <i class="fa-solid fa-arrow-right-to-bracket" style={{marginRight: "0.4rem"}}></i> Signup / Login
+                                    </>
+                                )
+                            }
 
-                    <div
-                      class="d-flex flex-column"
-                      style={{ color: "var(--text-color)" }}
-                    >
-                      <p class="mb-0" style={{ fontSize: "0.8rem" }}>
-                        {user.name}
-                      </p>
-                      <p
-                        class="mb-0"
-                        style={{ fontSize: "0.7rem", opacity: "0.7" }}
-                      >
-                        {user.email}
-                      </p>
-                    </div>
-                  </div>
-                  <hr
-                    class="dropdown-divider mx-2"
-                    style={{ border: "1px solid #d3cfcf3e" }}
-                  />
-                </>
-              ) : (
-                <></>
-              )}
-
-              <li
-                class="dropdown-item"
-                onClick={toggleTheme}
-                style={{ fontSize: "0.8rem", marginTop: "0" }}
-              >
-                {theme == "light" ? (
-                  <span
-                    class="d-flex align-items-center"
-                    style={{ fontSize: "12px" }}
-                  >
-                    <i
-                      className="lni lni-moon-half-right-5 mb-0"
-                      style={{ marginRight: "0.4rem", fontSize: "14px" }}
-                    ></i>{" "}
-                    Dark mode
-                  </span>
-                ) : (
-                  <span
-                    class="d-flex align-items-center"
-                    style={{ fontSize: "12px" }}
-                  >
-                    <i
-                      class="lni lni-sun-1 mb-0"
-                      style={{ marginRight: "0.4rem", fontSize: "14px" }}
-                    ></i>{" "}
-                    Light mode
-                  </span>
-                )}
-              </li>
-              <li
-                class="dropdown-item"
-                onClick={isAuthenticated ? logout : signup}
-                style={{ fontSize: "0.8rem", marginTop: "0" }}
-              >
-                <span style={{ fontSize: "12px" }}>
-                  {isAuthenticated ? (
-                    <>
-                      <i
-                        class="fa-solid fa-arrow-right-from-bracket"
-                        style={{ marginRight: "0.4rem" }}
-                      ></i>{" "}
-                      Logout
-                    </>
-                  ) : (
-                    <>
-                      <i
-                        class="fa-solid fa-arrow-right-to-bracket"
-                        style={{ marginRight: "0.4rem" }}
-                      ></i>{" "}
-                      Signup / Login
-                    </>
-                  )}
-                </span>
-              </li>
-            </ul>
-          </button>
+                        </span>
+                    </li>
+                </ul>
+            </button>
+          </div>
         </div>
       )}
     </div>
