@@ -25,7 +25,9 @@ mongoose.connect(process.env.DB_URL)
 app.use("/api", chatRoutes);
 
 
-
+app.get("/", (req, res) => {
+    res.send("GPTalks backend running.");
+})
 
 app.listen(5000, () => {
     console.log(`server running on port 5000`);
